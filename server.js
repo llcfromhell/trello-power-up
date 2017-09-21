@@ -23,7 +23,7 @@ app.get('/', function(req, res) {
 });
 
 // listen for requests :)
-app.listen(, function () {
+app.listen(port, function () {
   console.info(`Node Version: ${process.version}`);
   console.log('Trello Power-Up Server listening on port ' + listener.address().port);
 });
