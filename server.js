@@ -1,9 +1,10 @@
 // server.js
-// where your node app starts
-
 var compression = require('compression');
 var cors = require('cors');
 var express = require('express');
+
+var auth = require('./auth');
+
 var app = express();
 
 var port = process.env.PORT || 8080;
@@ -17,9 +18,11 @@ app.use(cors({ origin: 'https://trello.com' }));
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(req, res) {
-      res.write("<html><body><h1>hey yo</h1></body></html>");
-      res.end();
+app.use('/auth', auth);
+
+app.get('/dummy', function(req, res) {
+  res.write("<html><body><h1>hey yo</h1></body></html>");
+  res.end();
 });
 
 // listen for requests :)
