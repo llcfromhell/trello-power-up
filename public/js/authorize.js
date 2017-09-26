@@ -6,7 +6,7 @@ var Promise = TrelloPowerUp.Promise;
 var btnGetToken = document.getElementById('getToken');
 
 btnGetToken.addEventListener('click', function () {
-  
+
   var xhttp = new XMLHttpRequest();
   xhttp.open("POST", "/auth/token", true);
   xhttp.setRequestHeader("Content-type", "application/json");
@@ -20,7 +20,15 @@ btnGetToken.addEventListener('click', function () {
 
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-      console.log(this.responseText);
+      try {
+        var data = JSON.parse(xhttp.responseText);
+        if (data.access_token) {
+          t.storeSecret('token', data.access_token);
+        }
+      } catch (err) {
+        console.error(err.message + " in " + xmlhttp.responseText);
+        return;
+      }
     }
   };
 
