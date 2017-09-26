@@ -283,6 +283,11 @@ TrelloPowerUp.initialize({
     var authorized = false;
     
     t.loadSecret('token').then(function(token) {
+
+      console.logGroup('token');
+      console.log(token);
+      console.groupEnd();
+
       if (token) authorized = true;
     })
     
