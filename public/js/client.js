@@ -280,25 +280,33 @@ TrelloPowerUp.initialize({
   },
   'authorization-status': function(t, options){
     
-    var authorized = false;
-    
-    t.loadSecret('token').then(function(token) {
-
-      console.group('token');
-      console.log(token);
-      console.groupEnd();
-
-      if (token) authorized = true;
-    })
-
-    console.group('authorized');
-    console.log(authorized);
-    console.groupEnd();
+   
     
     // return a promise that resolves to the object with
     // a property 'authorized' being true/false
     // you can also return the object synchronously if you know the answer synchronously
-    return new TrelloPowerUp.Promise((resolve) => resolve({ authorized: authorized }));
+    return new TrelloPowerUp.Promise((resolve) => resolve(
+      
+      function() {
+        var authorized = false;
+        
+        t.loadSecret('token').then(function(token) {
+    
+          console.group('token');
+          console.log(token);
+          console.groupEnd();
+    
+          if (token) authorized = true;
+        })
+    
+        console.group('authorized');
+        console.log(authorized);
+        console.groupEnd();
+
+        return { authorized: authorized };
+      }
+
+    ));
   },
   'board-buttons': function(t, options){
     return [{
