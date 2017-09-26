@@ -290,6 +290,10 @@ TrelloPowerUp.initialize({
 
       if (token) authorized = true;
     })
+
+    console.group('authorized');
+    console.log(authorized);
+    console.groupEnd();
     
     // return a promise that resolves to the object with
     // a property 'authorized' being true/false
