@@ -284,7 +284,7 @@ TrelloPowerUp.initialize({
     
     t.loadSecret('token').then(function(token) {
 
-      console.logGroup('token');
+      console.group('token');
       console.log(token);
       console.groupEnd();
 
