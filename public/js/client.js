@@ -245,7 +245,6 @@ TrelloPowerUp.initialize({
         // that returns the section title. If you do so, provide a unique id for
         // your section
 
-
         t.loadSecret('token').then(function(token) {
 
           var contacts = [];
@@ -299,9 +298,16 @@ TrelloPowerUp.initialize({
 
           });  
 
-        }).then(function(){
-
+          console.group('requesting');
           console.log(contacts);
+          console.groupEnd();
+          return contacts;
+
+        }).then(function(contacts){
+
+          console.group('resolving');
+          console.log(contacts);
+          console.groupEnd();
           
           resolve(contacts);
 
