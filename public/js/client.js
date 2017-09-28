@@ -302,6 +302,8 @@ TrelloPowerUp.initialize({
 
             xhttp.send();
 
+            resolve(contacts);
+
           });
 
         });
@@ -310,7 +312,7 @@ TrelloPowerUp.initialize({
 
       console.log(contacts);
 
-      resolve(contacts);
+      //resolve(contacts);
 
     })
 
