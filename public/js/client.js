@@ -232,6 +232,8 @@ TrelloPowerUp.initialize({
       return attachment.url.indexOf('https://app.rdstation.com.br/leads/public/') === 0;
     });
 
+    var contacts = [];
+
     // you can have more than one attachment section on a card
     // you can group items together into one section, have a section
     // per attachment, or anything in between.
@@ -240,6 +242,8 @@ TrelloPowerUp.initialize({
       // potentially length operation you can provide a function for the title
       // that returns the section title. If you do so, provide a unique id for
       // your section
+
+      console.log(claimed);
 
       claimed.forEach(function(element) {
 
@@ -260,16 +264,35 @@ TrelloPowerUp.initialize({
           xhttp.setRequestHeader("Authorization", "Bearer " + token);
   
           xhttp.onreadystatechange = function () {
-            console.log(this);
+            
             if (this.readyState == 4 && this.status == 200) {
+              
               try {
-                var data = JSON.parse(xhttp.responseText);
-                if (data) {
-                  console.log(data);
+
+                var contact = JSON.parse(xhttp.responseText);
+                
+                if (contact) {
+                  
+                  contacts.push({
+                    id: contact.uuid, // optional if you aren't using a function for the title
+                    claimed: claimed,
+                    icon: HYPERDEV_ICON,
+                    title: contact.name,
+                    content: {
+                      type: 'iframe',
+                      url: t.signUrl('./section.html', { 'contact': contact }),
+                      height: 230
+                    }
+                  });
+
+                  console.log(contact);
                 }
+
               } catch (err) {
+                
                 console.error(err.message + " in " + xmlhttp.responseText);
                 return;
+
               }
             }
           }
@@ -278,23 +301,14 @@ TrelloPowerUp.initialize({
 
         });
 
-        
-
       });
 
-      return [{
-        id: 'Yellowstone', // optional if you aren't using a function for the title
-        claimed: claimed,
-        icon: HYPERDEV_ICON,
-        title: 'Example Attachment Section: Yellowstone',
-        content: {
-          type: 'iframe',
-          url: t.signUrl('./section.html', { arg: 'you can pass your section args here' }),
-          height: 230
-        }
-      }];
+      return [contacts];
+
     } else {
+
       return [];
+
     }
   },
   'attachment-thumbnail': function(t, options){
@@ -328,15 +342,17 @@ TrelloPowerUp.initialize({
     // return new TrelloPowerUp.Promise((resolve) => resolve({ authorized: authorized }));
     return new TrelloPowerUp.Promise(function(resolve, reject) {
       
-      t.loadSecret('token').then(function(token) {        
+      t.loadSecret('token').then(function(token) {
+
         try {
           authorized = (token);
           resolve({authorized : authorized});
         } catch (err) {
-          reject('No token stored');
+          reject('Error trying to load token from browser db.');
         }
+
       });
-      
+
     });
     
   },
@@ -414,14 +430,13 @@ TrelloPowerUp.initialize({
     // from the Power-Up gear icon which shows when 'authorization-status'
     // returns { authorized: false }
     // in this case we would open a popup
-    
-    
-    
+
     return t.popup({
       title: 'My Auth Popup',
       url: './authorize.html', // this page doesn't exist in this project but is just a normal page like settings.html
       height: 140,
     });
+
   },
   'show-settings': function(t, options){
     // when a user clicks the gear icon by your Power-Up in the Power-Ups menu

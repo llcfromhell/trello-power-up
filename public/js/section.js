@@ -7,7 +7,7 @@ var t = TrelloPowerUp.iframe();
 // be passed once, so don't rely on this for information that
 // could change, for example what attachments you want to show
 // in this section
-var arg = t.arg('arg');
+var contact = t.arg('contact');
 
 t.render(function(){
   // make sure your rendering logic lives here, since we will
@@ -16,10 +16,13 @@ t.render(function(){
   t.card('attachments')
   .get('attachments')
   .filter(function(attachment){
-    return attachment.url.indexOf('http://www.nps.gov/yell/') == 0;
+    return attachment.url.indexOf('https://www.rdstation.com.br/api/v2/contacts/'+contact.uuid) == 0;
   })
-  .then(function(yellowstoneAttachments){
-    var urls = yellowstoneAttachments.map(function(a){ return a.url; });
+  .then(function(rdAttachments){
+    var urls = rdAttachments.map(function(a){ return a.url; });
+
+    document.getElementById('name').textContent = contact.name;
+
     document.getElementById('urls').textContent = urls.join(', ');
   })
   .then(function(){
