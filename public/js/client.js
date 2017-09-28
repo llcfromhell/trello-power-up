@@ -242,7 +242,28 @@ TrelloPowerUp.initialize({
       // your section
 
       claimed.forEach(function(element) {
+
         console.log(element.url);
+        
+        var uuid = element.url.split('/').pop();
+
+        console.log(uuid);
+
+        var token = t.loadSecret('token');
+
+        console.log(token);
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "https://www.rdstation.com.br/api/v2/contacts/" + uuid, true);
+        
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("Authorization", "Bearer " + token);
+
+        var data = JSON.parse(xhttp.responseText);
+        if (data) {
+          console.log(data);
+        }
+
       });
 
       return [{
