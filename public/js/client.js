@@ -249,20 +249,33 @@ TrelloPowerUp.initialize({
 
         console.log(uuid);
 
-        var token = t.loadSecret('token');
+        t.loadSecret('token').then(function(token){
+          
+          console.log(token);
+          
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("GET", "https://www.rdstation.com.br/api/v2/contacts/" + uuid, true);
+          
+          xhttp.setRequestHeader("Content-type", "application/json");
+          xhttp.setRequestHeader("Authorization", "Bearer " + token);
+  
+          xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+              try {
 
-        console.log(token.value());
+                var data = JSON.parse(xhttp.responseText);
+                if (data) {
+                  console.log(data);
+                }
+              } catch (err) {
+                console.error(err.message + " in " + xmlhttp.responseText);
+                return;
+              }
+            }
+          }
+        });
 
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "https://www.rdstation.com.br/api/v2/contacts/" + uuid, true);
         
-        xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.setRequestHeader("Authorization", "Bearer " + token.value());
-
-        var data = JSON.parse(xhttp.responseText);
-        if (data) {
-          console.log(data);
-        }
 
       });
 
