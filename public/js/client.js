@@ -249,15 +249,15 @@ TrelloPowerUp.initialize({
 
         console.log(uuid);
 
-        var token = t.loadSecret('token').value();
+        var token = t.loadSecret('token');
 
-        console.log(token);
+        console.log(token.value());
 
         var xhttp = new XMLHttpRequest();
         xhttp.open("GET", "https://www.rdstation.com.br/api/v2/contacts/" + uuid, true);
         
         xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.setRequestHeader("Authorization", "Bearer " + token);
+        xhttp.setRequestHeader("Authorization", "Bearer " + token.value());
 
         var data = JSON.parse(xhttp.responseText);
         if (data) {
