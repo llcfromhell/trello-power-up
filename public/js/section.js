@@ -2,6 +2,8 @@
 
 var t = TrelloPowerUp.iframe();
 
+console.log('oi');
+
 // you can access arguments passed to your iframe like so
 // unlike logic that lives inside t.render() this will only
 // be passed once, so don't rely on this for information that

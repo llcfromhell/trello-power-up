@@ -308,6 +308,8 @@ TrelloPowerUp.initialize({
 
       } 
 
+      console.log(contacts);
+
       resolve(contacts);
 
     })
