@@ -5,24 +5,13 @@
   </head>
   <body>
     <div id="content">
-      <p>Shared - Select a fruit</p>
-      <select id="fruit">
-        <option value="apple">Apple</option>
-        <option value="banana">Banana</option>
-        <option value="date">Date</option>
-        <option value="lemon">Lemon</option>
-        <option value="pineapple">Pineapple</option>
-      </select>
-      <p>Private - Select a vegetable</p>
-      <select id="vegetable">
-        <option value="broccoli">Broccoli</option>
-        <option value="corn">Corn</option>
-        <option value="kale">Kale</option>
-        <option value="onion">Onion</option>
-        <option value="spinach">Spinach</option>
-      </select>
-      <button id="save" class="mod-primary">Save</button>
+      <p>Client ID</p>
+      <input id="client-id" type="text" />
+      <p>Client Secret</p>
+      <input id="client-secret" type="text" />
+      <button id="getToken" class="mod-primary">Get Token</button>
+      <button id="authorize" class="mod-primary">Authorize</button>
     </div>
-    <script src="./js/settings.js"></script>
+      <script src="./js/authorize.js"></script>
   </body>
 </html>
