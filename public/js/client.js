@@ -322,28 +322,25 @@ TrelloPowerUp.initialize({
   },
   'authorization-status': function(t, options){
     
-    var authorized = false;
-    
     // return a promise that resolves to the object with
     // a property 'authorized' being true/false
     // you can also return the object synchronously if you know the answer synchronously
     // return new TrelloPowerUp.Promise((resolve) => resolve({ authorized: authorized }));
     return new TrelloPowerUp.Promise(function(resolve, reject) {
-      t.loadSecret('token').then(function(token) {
-        
-        if (token) {
-          authorized = true; 
-          
+      
+      t.loadSecret('token').then(function(token) {        
+        try {
+          authorized = (token);
           resolve({authorized : authorized});
-        } 
-        else reject('No token stored');
+        } catch (err) {
+          reject('No token stored');
+        }
       });
+      
     });
     
-
-
-
   },
+
   'board-buttons': function(t, options){
     return [{
       // we can either provide a button that has a callback function
