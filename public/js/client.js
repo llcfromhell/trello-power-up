@@ -235,31 +235,25 @@ TrelloPowerUp.initialize({
         return attachment.url.indexOf('https://app.rdstation.com.br/leads/public/') === 0;
       });
 
-      var contacts = [];
-
       // you can have more than one attachment section on a card
       // you can group items together into one section, have a section
       // per attachment, or anything in between.
+      
       if(claimed && claimed.length > 0){
         // if the title for your section requires a network call or other
         // potentially length operation you can provide a function for the title
         // that returns the section title. If you do so, provide a unique id for
         // your section
 
-        console.log(claimed);
 
-        claimed.forEach(function(element) {
+        t.loadSecret('token').then(function(token) {
 
-          console.log(element.url);
-          
-          var uuid = element.url.split('/').pop();
+          var contacts = [];
 
-          console.log(uuid);
+          claimed.forEach(function(element) {
 
-          t.loadSecret('token').then(function(token){
-            
-            console.log(token);
-            
+            var uuid = element.url.split('/').pop();
+              
             var xhttp = new XMLHttpRequest();
             xhttp.open("GET", "https://www.rdstation.com.br/api/v2/contacts/" + uuid, true);
             
@@ -269,7 +263,7 @@ TrelloPowerUp.initialize({
             xhttp.onreadystatechange = function () {
               
               if (this.readyState == 4 && this.status == 200) {
-                
+                  
                 try {
 
                   var contact = JSON.parse(xhttp.responseText);
@@ -289,10 +283,11 @@ TrelloPowerUp.initialize({
                     });
 
                     console.log(contact);
+
                   }
 
                 } catch (err) {
-                  
+                    
                   console.error(err.message + " in " + xmlhttp.responseText);
                   return;
 
@@ -302,17 +297,17 @@ TrelloPowerUp.initialize({
 
             xhttp.send();
 
-            resolve(contacts);
+          });  
 
-          });
+        }).then(function(){
+
+          console.log(contacts);
+          
+          resolve(contacts);
 
         });
 
       } 
-
-      console.log(contacts);
-
-      //resolve(contacts);
 
     })
 
