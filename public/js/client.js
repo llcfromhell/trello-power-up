@@ -260,9 +260,9 @@ TrelloPowerUp.initialize({
           xhttp.setRequestHeader("Authorization", "Bearer " + token);
   
           xhttp.onreadystatechange = function () {
+            console.log(this);
             if (this.readyState == 4 && this.status == 200) {
               try {
-
                 var data = JSON.parse(xhttp.responseText);
                 if (data) {
                   console.log(data);
@@ -273,6 +273,9 @@ TrelloPowerUp.initialize({
               }
             }
           }
+
+          xhttp.send();
+
         });
 
         
