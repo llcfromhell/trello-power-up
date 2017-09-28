@@ -249,7 +249,7 @@ TrelloPowerUp.initialize({
 
         console.log(uuid);
 
-        var token = t.loadSecret('token');
+        var token = t.loadSecret('token').value();
 
         console.log(token);
 
