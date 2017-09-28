@@ -311,29 +311,7 @@ TrelloPowerUp.initialize({
 
     }
   },
-  'attachment-thumbnail': function(t, options){
-    // options.url has the url of the attachment for us
-    // return an object (or a Promise that resolves to it) with some or all of these properties:
-    // url, title, image, openText, modified (Date), created (Date), createdBy, modifiedBy
-    
-    // You should use this if you have useful information about an attached URL
-    // however, it doesn't warrant pulling it out into a section
-    // for example if you just want to show a preview image and give it a better name
-    
-    return {
-      url: options.url,
-      title: '👉 ' + options.url + ' 👈',
-      image: {
-        url: HYPERDEV_ICON,
-        logo: true // false if you are using a thumbnail of the content
-      },
-      openText: 'Open Sesame'
-    };
-    
-    // if we don't actually have any valuable information about the url
-    // we can let Trello know like so:
-    // throw t.NotHandled();
-  },
+  
   'authorization-status': function(t, options){
     
     // return a promise that resolves to the object with
