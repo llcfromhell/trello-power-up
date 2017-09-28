@@ -229,7 +229,7 @@ TrelloPowerUp.initialize({
 
     // we will just claim urls for Yellowstone
     var claimed = options.entries.filter(function(attachment){
-      return attachment.url.indexOf('http://www.nps.gov/yell/') === 0;
+      return attachment.url.indexOf('https://app.rdstation.com.br/leads/public/') === 0;
     });
 
     // you can have more than one attachment section on a card
@@ -240,6 +240,11 @@ TrelloPowerUp.initialize({
       // potentially length operation you can provide a function for the title
       // that returns the section title. If you do so, provide a unique id for
       // your section
+
+      claimed.forEach(function(element) {
+        console.log(element.url);
+      });
+
       return [{
         id: 'Yellowstone', // optional if you aren't using a function for the title
         claimed: claimed,
