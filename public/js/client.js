@@ -222,94 +222,96 @@ TrelloPowerUp.initialize({
   // If you need to make an asynchronous request or action before you can reply to Trello
   // you can return a Promise (bluebird promises are included at TrelloPowerUp.Promise)
   // The Promise should resolve to the object type that is expected to be returned
-  'attachment-sections': function(t, options){
-    // options.entries is a list of the attachments for this card
-    // you can look through them and 'claim' any that you want to
-    // include in your section.
+  'attachment-sections': function(t, options) {
 
-    // we will just claim urls for Yellowstone
-    var claimed = options.entries.filter(function(attachment){
-      return attachment.url.indexOf('https://app.rdstation.com.br/leads/public/') === 0;
-    });
+    return new Promise(function(resolve) {
 
-    var contacts = [];
+      // options.entries is a list of the attachments for this card
+      // you can look through them and 'claim' any that you want to
+      // include in your section.
 
-    // you can have more than one attachment section on a card
-    // you can group items together into one section, have a section
-    // per attachment, or anything in between.
-    if(claimed && claimed.length > 0){
-      // if the title for your section requires a network call or other
-      // potentially length operation you can provide a function for the title
-      // that returns the section title. If you do so, provide a unique id for
-      // your section
+      // we will just claim urls for Yellowstone
+      var claimed = options.entries.filter(function(attachment){
+        return attachment.url.indexOf('https://app.rdstation.com.br/leads/public/') === 0;
+      });
 
-      console.log(claimed);
+      var contacts = [];
 
-      claimed.forEach(function(element) {
+      // you can have more than one attachment section on a card
+      // you can group items together into one section, have a section
+      // per attachment, or anything in between.
+      if(claimed && claimed.length > 0){
+        // if the title for your section requires a network call or other
+        // potentially length operation you can provide a function for the title
+        // that returns the section title. If you do so, provide a unique id for
+        // your section
 
-        console.log(element.url);
-        
-        var uuid = element.url.split('/').pop();
+        console.log(claimed);
 
-        console.log(uuid);
+        claimed.forEach(function(element) {
 
-        t.loadSecret('token').then(function(token){
+          console.log(element.url);
           
-          console.log(token);
-          
-          var xhttp = new XMLHttpRequest();
-          xhttp.open("GET", "https://www.rdstation.com.br/api/v2/contacts/" + uuid, true);
-          
-          xhttp.setRequestHeader("Content-type", "application/json");
-          xhttp.setRequestHeader("Authorization", "Bearer " + token);
-  
-          xhttp.onreadystatechange = function () {
+          var uuid = element.url.split('/').pop();
+
+          console.log(uuid);
+
+          t.loadSecret('token').then(function(token){
             
-            if (this.readyState == 4 && this.status == 200) {
+            console.log(token);
+            
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "https://www.rdstation.com.br/api/v2/contacts/" + uuid, true);
+            
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.setRequestHeader("Authorization", "Bearer " + token);
+    
+            xhttp.onreadystatechange = function () {
               
-              try {
-
-                var contact = JSON.parse(xhttp.responseText);
+              if (this.readyState == 4 && this.status == 200) {
                 
-                if (contact) {
+                try {
+
+                  var contact = JSON.parse(xhttp.responseText);
                   
-                  contacts.push({
-                    id: contact.uuid, // optional if you aren't using a function for the title
-                    claimed: claimed,
-                    icon: HYPERDEV_ICON,
-                    title: contact.name,
-                    content: {
-                      type: 'iframe',
-                      url: t.signUrl('./section.html', { 'contact': contact }),
-                      height: 230
-                    }
-                  });
+                  if (contact) {
+                    
+                    contacts.push({
+                      id: contact.uuid, // optional if you aren't using a function for the title
+                      claimed: claimed,
+                      icon: HYPERDEV_ICON,
+                      title: contact.name,
+                      content: {
+                        type: 'iframe',
+                        url: t.signUrl('./section.html', { 'contact': contact }),
+                        height: 230
+                      }
+                    });
 
-                  console.log(contact);
+                    console.log(contact);
+                  }
+
+                } catch (err) {
+                  
+                  console.error(err.message + " in " + xmlhttp.responseText);
+                  return;
+
                 }
-
-              } catch (err) {
-                
-                console.error(err.message + " in " + xmlhttp.responseText);
-                return;
-
               }
             }
-          }
 
-          xhttp.send();
+            xhttp.send();
+
+          });
 
         });
 
-      });
+      } 
 
-      return [contacts];
-
-    } else {
-
-      return [];
+      resolve(contacts);
 
     }
+
   },
   
   'authorization-status': function(t, options){
@@ -335,43 +337,43 @@ TrelloPowerUp.initialize({
     
   },
 
-  'board-buttons': function(t, options){
-    return [{
-      // we can either provide a button that has a callback function
-      // that callback function should probably open a popup, overlay, or boardBar
-      icon: WHITE_ICON,
-      text: 'Popup',
-      callback: boardButtonCallback
-    }, {
-      // or we can also have a button that is just a simple url
-      // clicking it will open a new tab at the provided url
-      icon: WHITE_ICON,
-      text: 'URL',
-      url: 'https://trello.com/inspiration',
-      target: 'Inspiring Boards' // optional target for above url
-    }];
-  },
-  'card-badges': function(t, options){
-    return getBadges(t);
-  },
-  'card-buttons': function(t, options) {
-    return [{
-      // usually you will provide a callback function to be run on button click
-      // we recommend that you use a popup on click generally
-      icon: GRAY_ICON, // don't use a colored icon here
-      text: 'Open Popup',
-      callback: cardButtonCallback
-    }, {
-      // but of course, you could also just kick off to a url if that's your thing
-      icon: GRAY_ICON,
-      text: 'Just a URL',
-      url: 'https://developers.trello.com',
-      target: 'Trello Developer Site' // optional target for above url
-    }];
-  },
-  'card-detail-badges': function(t, options) {
-    return getBadges(t);
-  },
+  // 'board-buttons': function(t, options){
+  //   return [{
+  //     // we can either provide a button that has a callback function
+  //     // that callback function should probably open a popup, overlay, or boardBar
+  //     icon: WHITE_ICON,
+  //     text: 'Popup',
+  //     callback: boardButtonCallback
+  //   }, {
+  //     // or we can also have a button that is just a simple url
+  //     // clicking it will open a new tab at the provided url
+  //     icon: WHITE_ICON,
+  //     text: 'URL',
+  //     url: 'https://trello.com/inspiration',
+  //     target: 'Inspiring Boards' // optional target for above url
+  //   }];
+  // },
+  // 'card-badges': function(t, options){
+  //   return getBadges(t);
+  // },
+  // 'card-buttons': function(t, options) {
+  //   return [{
+  //     // usually you will provide a callback function to be run on button click
+  //     // we recommend that you use a popup on click generally
+  //     icon: GRAY_ICON, // don't use a colored icon here
+  //     text: 'Open Popup',
+  //     callback: cardButtonCallback
+  //   }, {
+  //     // but of course, you could also just kick off to a url if that's your thing
+  //     icon: GRAY_ICON,
+  //     text: 'Just a URL',
+  //     url: 'https://developers.trello.com',
+  //     target: 'Trello Developer Site' // optional target for above url
+  //   }];
+  // },
+  // 'card-detail-badges': function(t, options) {
+  //   return getBadges(t);
+  // },
   'card-from-url': function(t, options) {
     // options.url has the url in question
     // if we know cool things about that url we can give Trello a name and desc
