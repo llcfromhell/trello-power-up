@@ -310,7 +310,7 @@ TrelloPowerUp.initialize({
 
       resolve(contacts);
 
-    }
+    })
 
   },
   
