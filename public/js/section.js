@@ -93,7 +93,7 @@ t.render(function(){
   .then(function(rdAttachments){
     var urls = rdAttachments.map(function(a){ return a.url; });
 
-    document.getElementById('name').textContent = contact.name;
+    document.getElementById('name').textContent = uuid;
 
     document.getElementById('urls').textContent = urls.join(', ');
   })
