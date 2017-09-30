@@ -88,7 +88,7 @@ t.render(function(){
   t.card('attachments')
   .get('attachments')
   .filter(function(attachment){
-    return attachment.url.indexOf('https://www.rdstation.com.br/api/v2/contacts/'+contact.uuid) == 0;
+    return attachment.url.indexOf('https://www.rdstation.com.br/api/v2/contacts/'.uuid) == 0;
   })
   .then(function(rdAttachments){
     var urls = rdAttachments.map(function(a){ return a.url; });
