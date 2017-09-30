@@ -9,7 +9,7 @@ console.log('oi');
 // be passed once, so don't rely on this for information that
 // could change, for example what attachments you want to show
 // in this section
-var contact = t.arg('contact');
+var uuid = t.arg('uid');
 
 t.render(function(){
   // make sure your rendering logic lives here, since we will
