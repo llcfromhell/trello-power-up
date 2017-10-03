@@ -2,102 +2,133 @@
 
 var t = TrelloPowerUp.iframe();
 
-console.log('oi');
-
 // you can access arguments passed to your iframe like so
 // unlike logic that lives inside t.render() this will only
 // be passed once, so don't rely on this for information that
 // could change, for example what attachments you want to show
 // in this section
-var uuid = t.arg('uid');
 
 t.render(function(){
   // make sure your rendering logic lives here, since we will
   // recall this method as the user adds and removes attachments
   // from your section
 
-  // t.loadSecret('token').then(function(token) {
-    
-  //             var contacts = [];
-    
-  //             claimed.forEach(function(element) {
-    
-  //               var uuid = element.url.split('/').pop();
-                  
-  //               var xhttp = new XMLHttpRequest();
-  //               xhttp.open("GET", "https://www.rdstation.com.br/api/v2/contacts/" + uuid, true);
-                
-  //               xhttp.setRequestHeader("Content-type", "application/json");
-  //               xhttp.setRequestHeader("Authorization", "Bearer " + token);
-        
-  //               xhttp.onreadystatechange = function () {
-                  
-  //                 if (this.readyState == 4 && this.status == 200) {
-                      
-  //                   try {
-    
-  //                     var contact = JSON.parse(xhttp.responseText);
-                      
-  //                     if (contact) {
-                        
-  //                       contacts.push({
-  //                         id: contact.uuid, // optional if you aren't using a function for the title
-  //                         claimed: claimed,
-  //                         icon: HYPERDEV_ICON,
-  //                         title: contact.name,
-  //                         content: {
-  //                           type: 'iframe',
-  //                           url: t.signUrl('./section.html', { 'contact': contact }),
-  //                           height: 230
-  //                         }
-  //                       });
-    
-  //                       console.log(contact);
-    
-  //                     }
-    
-  //                   } catch (err) {
-                        
-  //                     console.error(err.message + " in " + xmlhttp.responseText);
-  //                     return;
-    
-  //                   }
-  //                 }
-  //               }
-    
-  //               xhttp.send();
-    
-  //             });  
-    
-  //             console.group('requesting');
-  //             console.log(contacts);
-  //             console.groupEnd();
-  //             return contacts;
-    
-  //           }).then(function(contacts){
-    
-  //             console.group('resolving');
-  //             console.log(contacts);
-  //             console.groupEnd();
+  var rdApiUrl = 'https://app.rdstation.com.br/leads/public/';
+  var uuid = t.arg('uuid');
+  
+  t.loadSecret('token').then(function(token) {
+  
+    getContactData(token, uuid).then(function(contact) {
               
-  //             resolve(contacts);
+      if (contact) {
+
+        var content = document.getElementById('content');
+        
+        content.innerHTML = '';
+        
+        var infoTable = document.createElement('TABLE');
+
+        var headerRow = infoTable.createTHead().insertRow(0);
+        var th = document.createElement('th');
+        th.innerHTML = contact.name;
+        th.colSpan = 2;
+        headerRow.append(th);
+
+        var tbody = document.createElement('tbody');
+
+        var tagsRow = tbody.insertRow(0);
+        tagsRow.insertCell(0).innerHTML = "Tags";
+        tagsRow.insertCell(1).innerHTML = contact.tags.reduce(function(prev,curr){return prev + ", " + curr});
+
+        if (contact.email) {
+          var emailRow = tbody.insertRow(0);
+          emailRow.insertCell(0).innerHTML = "Email";
+          emailRow.insertCell(1).innerHTML = contact.email;
+        }
+
+        if (contact.personal_phone) {
+          var phoneRow = tbody.insertRow(0);
+          phoneRow.insertCell(0).innerHTML = "Tel. Fixo";
+          phoneRow.insertCell(1).innerHTML = contact.personal_phone;
+        }
+        
+        if (contact.mobile_phone) {
+          var mobileRow = tbody.insertRow(0);
+          mobileRow.insertCell(0).innerHTML = "Tel. Celular";
+          mobileRow.insertCell(1).innerHTML = contact.mobile_phone;
+        }
+
+        var jobRow = tbody.insertRow(0);
+        jobRow.insertCell(0).innerHTML = "Cargo";
+        jobRow.insertCell(1).innerHTML = contact.job_title;
+
+        var cityRow = tbody.insertRow(0);
+        cityRow.insertCell(0).innerHTML = "Cidade";
+        cityRow.insertCell(1).innerHTML = contact.city;
+
+        var facebookRow = tbody.insertRow(0);
+        facebookRow.insertCell(0).innerHTML = "Facebook";
+        var linkFb = document.createElement('A');
+        linkFb.setAttribute('href', 'https://www.facebook.com/'+contact.facebook);
+        linkFb.appendChild(document.createTextNode(contact.facebook));
+        facebookRow.insertCell(1).appendChild(linkFb);
+
+        var twitterRow = tbody.insertRow(0);
+        twitterRow.insertCell(0).innerHTML = "Twitter";
+        twitterRow.insertCell(1).innerHTML = contact.twitter;
+
+        var linkedinRow = tbody.insertRow(0);
+        linkedinRow.insertCell(0).innerHTML = "Linkedin";
+        linkedinRow.insertCell(1).innerHTML = contact.linkedin;
+        
+        if (contact.website) {
+          var websiteRow = tbody.insertRow(0);
+          websiteRow.insertCell(0).innerHTML = "Website";
+          websiteRow.insertCell(1).innerHTML = contact.website;
+        }
+
+        infoTable.append(tbody);
+        
+        content.appendChild(infoTable);
+
+      }
     
-  //           });
+    //
+    // when getContactData fails
+    //
+    }, function(errorCode) {
 
+      console.log(errorCode)
 
-  t.card('attachments')
-  .get('attachments')
-  .filter(function(attachment){
-    return attachment.url.indexOf('https://www.rdstation.com.br/api/v2/contacts/'.uuid) == 0;
+    //
+    // at least
+    //
+    }).then(function() {
+
+      t.card('attachments').get('attachments')
+
+      .filter(function(attachment) {      
+        return attachment.url.indexOf(rdApiUrl + uuid) == 0;
+      })
+
+      .then(function(rdAttachments) {
+        
+        var url = rdAttachments[0].url;
+        
+        document.getElementById('url').textContent = url;
+
+      })
+
+      .then(function(){
+        
+        document.getElementById('loader').style.display = 'none';
+
+        return t.sizeTo('#content');
+
+      });
+      
+    });
+    
   })
-  .then(function(rdAttachments){
-    var urls = rdAttachments.map(function(a){ return a.url; });
-
-    document.getElementById('name').textContent = uuid;
-
-    document.getElementById('urls').textContent = urls.join(', ');
-  })
-  .then(function(){
-    return t.sizeTo('#content');
-  });
+  
 });
