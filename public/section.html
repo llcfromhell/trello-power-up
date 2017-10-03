@@ -1,17 +1,22 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://trello.com/power-ups/power-up.css">
+    
+    <link rel="stylesheet" href="./css/loader.css">
+    
     <script src="https://trello.com/power-ups/power-up.min.js"></script>
   </head>
   <body>
     <div id="content">
-      <p>Contato: </p>
-      <ul>
-        <li id="name"></li>
-        <li id="email"></li>
-      </ul>
-      <p class="u-quiet">Claimed attachment urls: <span id="urls"></span></p>
+      
+      <div id="loader" class="loader"></div>
+      
+      <p class="u-quiet"><span id="url"></span></p>
+   
     </div>
+    
+    <script src="./js/RDService.js"></script>
     <script src="./js/section.js"></script>
+    
   </body>
 </html>

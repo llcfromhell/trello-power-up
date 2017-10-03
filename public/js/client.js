@@ -218,6 +218,7 @@ var cardButtonCallback = function (t) {
 
 // We need to call initialize to get all of our capability handles set up and registered with Trello
 TrelloPowerUp.initialize({
+  
   // NOTE about asynchronous responses
   // If you need to make an asynchronous request or action before you can reply to Trello
   // you can return a Promise (bluebird promises are included at TrelloPowerUp.Promise)
@@ -236,7 +237,7 @@ TrelloPowerUp.initialize({
     // you can have more than one attachment section on a card
     // you can group items together into one section, have a section
     // per attachment, or anything in between.
-
+    
     var contacts = [];
 
     if (claimed && claimed.length > 0) {
@@ -251,10 +252,10 @@ TrelloPowerUp.initialize({
 
         contacts.push({
           
-          id: 'Yellowstone', // optional if you aren't using a function for the title
+          //id: 'Yellowstone', // optional if you aren't using a function for the title
           claimed: claimed,
-          icon: HYPERDEV_ICON,
-          title: 'Example Attachment Section: Yellowstone',
+          //icon: HYPERDEV_ICON,
+          title: 'Contato do RD Station',
           content: {
             type: 'iframe',
             url: t.signUrl('./section.html', { uuid: uuid }),
@@ -282,8 +283,9 @@ TrelloPowerUp.initialize({
           t.loadSecret('token').then(function (token) {
 
             try {
-              authorized = (token);
+              var authorized = (token);
               resolve({ authorized: authorized });
+              
             } catch (err) {
               reject('Error trying to load token from browser db.');
             }
@@ -369,7 +371,7 @@ TrelloPowerUp.initialize({
         // in this case we would open a popup
 
         return t.popup({
-          title: 'My Auth Popup',
+          title: 'Autorizar conta',
           url: './authorize.html', // this page doesn't exist in this project but is just a normal page like settings.html
           height: 140,
         });
