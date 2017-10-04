@@ -74,62 +74,43 @@ var HYPERDEV_ICON = 'https://cdn.hyperdev.com/us-east-1%3A3d31b21c-01a0-4da2-882
 var GRAY_ICON = 'https://cdn.hyperdev.com/us-east-1%3A3d31b21c-01a0-4da2-8827-4bc6e88b7618%2Ficon-gray.svg';
 var WHITE_ICON = 'https://cdn.hyperdev.com/us-east-1%3A3d31b21c-01a0-4da2-8827-4bc6e88b7618%2Ficon-white.svg';
 
+var RD_ICON_12 = 'https://seemly-hill.glitch.me/img/logo-small-12.jpg';
+var RD_ICON = 'https://seemly-hill.glitch.me/img/logo-small.jpg';
+
 var randomBadgeColor = function () {
   return ['green', 'yellow', 'red', 'none'][Math.floor(Math.random() * 4)];
 };
 
-var getBadges = function (t) {
-  return t.card('name')
-    .get('name')
-    .then(function (cardName) {
-      console.log('We just loaded the card name for fun: ' + cardName);
-
-      return [{
-        // dynamic badges can have their function rerun after a set number
-        // of seconds defined by refresh. Minimum of 10 seconds.
-        dynamic: function () {
-          // we could also return a Promise that resolves to this as well if we needed to do something async first
-          return {
-            title: 'Detail Badge', // for detail badges only
-            text: 'Dynamic ' + (Math.random() * 100).toFixed(0).toString(),
-            icon: HYPERDEV_ICON, // for card front badges only
-            color: randomBadgeColor(),
-            refresh: 10 // in seconds
+var getBadges = function (t, options) {
+  
+  return t.card('attachments').get('attachments')
+    
+    .then(function(attachments) {
+    
+        var rdAttachments = attachments.filter(function (attachment) {
+          return attachment.url.indexOf('https://app.rdstation.com.br/leads/public/') === 0;
+        });
+    
+        var rdBadge = { };
+    
+        console.log(rdAttachments)
+    
+        if (rdAttachments.length) {  
+          rdBadge = {
+            title: 'RD', // for detail badges only
+            text: rdAttachments.length,
+            icon: RD_ICON_12, // for card front badges only
+            color: null
           };
-        }
-      }, {
-        // its best to use static badges unless you need your badges to refresh
-        // you can mix and match between static and dynamic
-        title: 'Detail Badge', // for detail badges only
-        text: 'Static',
-        icon: HYPERDEV_ICON, // for card front badges only
-        color: null
-      }, {
-        // card detail badges (those that appear on the back of cards)
-        // also support callback functions so that you can open for example
-        // open a popup on click
-        title: 'Popup Detail Badge', // for detail badges only
-        text: 'Popup',
-        icon: HYPERDEV_ICON, // for card front badges only
-        callback: function (context) { // function to run on click
-          return context.popup({
-            title: 'Card Detail Badge Popup',
-            url: './settings.html',
-            height: 184 // we can always resize later, but if we know the size in advance, its good to tell Trello
-          });
-        }
-      }, {
-        // or for simpler use cases you can also provide a url
-        // when the user clicks on the card detail badge they will
-        // go to a new tab at that url
-        title: 'URL Detail Badge', // for detail badges only
-        text: 'URL',
-        icon: HYPERDEV_ICON, // for card front badges only
-        url: 'https://trello.com/home',
-        target: 'Trello Landing Page' // optional target for above url
-      }];
-    });
-};
+        }  
+          
+        return [rdBadge];
+        
+      })
+    
+      
+    };
+
 
 var boardButtonCallback = function (t) {
   return t.popup({
@@ -254,7 +235,7 @@ TrelloPowerUp.initialize({
           
           //id: 'Yellowstone', // optional if you aren't using a function for the title
           claimed: claimed,
-          //icon: HYPERDEV_ICON,
+          icon: RD_ICON_12,
           title: 'Contato do RD Station',
           content: {
             type: 'iframe',
@@ -312,9 +293,9 @@ TrelloPowerUp.initialize({
       //     target: 'Inspiring Boards' // optional target for above url
       //   }];
       // },
-      // 'card-badges': function(t, options){
-      //   return getBadges(t);
-      // },
+      'card-badges': function(t, options){       
+        return getBadges(t, options);
+      },
       // 'card-buttons': function(t, options) {
       //   return [{
       //     // usually you will provide a callback function to be run on button click
